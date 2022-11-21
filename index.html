@@ -22,6 +22,40 @@
 		border-radius: 8px;			
 		pointer-events: none;			
 	}
+	
+	.column {
+		float: left;
+		padding: 0px;
+	}
+	.left, .right {
+		width: 25%;
+	}
+	.middle1, .middle2 {
+		width: 25%;
+	}
+	
+	div.author {
+		font-size: 16px;
+    	text-align: center;
+		background-color: aliceblue;
+	}
+	
+	.row:after {
+            content: "";
+            display: table;
+            clear: both;
+	}
+	.author {
+		line-height: 1;
+	}
+	#chart {
+		position:absolute;
+	}
+	.line {
+	  fill: none;
+	  stroke: #EF5285;
+	  stroke-width: 2px;
+	}
 </style>
 
 <!-- Load d3.js and the geo projection plugin -->
@@ -37,6 +71,49 @@
 	<!-- Create an element where the map will take place -->
 	<svg id="my_dataviz" width="500" height="400"></svg>
 	<p>This visualization shows a world map with various shipping ports as circles. The radius of the circle gets larger as the volume of goods being transferred increases while the color of the circle gets lighter as the political value of the port increases. The volume of goods is being measured in Twenty-foot Equivalent Units (TEUs). There is a correlation between the color and the size of the circles as larger ports hold more political power.</p>
+	
+	
+	<div class = 'author'>
+		<h4 style="font-style: italic"><br/>Created by</h4>
+			<p style="position:relative;top:0px;right:0px; font-size:16px; text-align:center;" id="myParagraph">
+				Dmitrius Agoston (dagoston@ucsc.edu)<br> 
+				Benjamin Birnbaum (bbirnbau@ucsc.edu)<br>
+				Anna Yu (antyu@ucsc.edu)<br>
+				in collaboration with Suresh K. Lodha, Jacob Low, and Omkar Ghanekar</p>
+		<p><strong><em>Github Link:</em></strong> <a href="https://github.com/dmitriusagoston/Global-Shipping-Ports">https://github.com/dmitriusagoston/Global-Shipping-Ports/</a></p>
+		<h4 style="font-style: italic"><br/>Designed for</h4>
+			<p id="myParagraph">CSE 163: Data Programming for Visualization, Fall 2022</p>
+		
+		<div class="row">
+          <div class="column left">
+            <b>Files</b>
+            <p>index.html<br>README.md<br>
+				TEUByYear.csv<br>top100port.csv<br>world.json</p>
+          </div>
+          <div class="column middle1">
+            <b>Data Sources</b>
+            <p>
+            	<a href="https://data.humdata.org/dataset/global-ports">Global Port Dataset</a><br>
+				<a href="https://lloydslist.maritimeintelligence.informa.com/one-hundred-container-ports-2020">Top 100 Ports</a><br>
+				<a href="https://datacatalog.worldbank.org/search/dataset/0038118">Global - International Ports</a><br>
+            </p>
+          </div>
+          <div class="column middle2">
+            <b>Visualization Sources</b>
+			<p>
+				<a href="https://d3-graph-gallery.com/graph/bubblemap_template.html">Bubble Map</a><br>
+				<a href="https://bl.ocks.org/piwodlaiwo/3734a1357696dcff203a94012646e932">World Map</a><br>
+        	</p>
+          </div>
+          <div class="column right">
+            <b>Code Sources</b>
+            <p>
+				<a href="https://d3-graph-gallery.com/graph/bubblemap_template.html">Bubble Map</a><br>
+				<a href="https://bl.ocks.org/piwodlaiwo/3734a1357696dcff203a94012646e932">World Map</a><br>
+			</p>
+          </div>
+        </div>
+	</div>
 </html>
 	
 <script>
