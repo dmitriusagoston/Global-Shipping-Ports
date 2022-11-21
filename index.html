@@ -7,7 +7,7 @@
 	
     #port-change {
         position: absolute;
-        top: 380px;
+        top: 450px;
         left: 10px;
     }
 </style>
@@ -17,10 +17,16 @@
 <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
-<button id="port-change" type="button">Switch Port Radius</button>
+<html>
+	<h1 style = "text-align:center"><bold>Global Shipping Ports</bold></h1>
+	
+	<button id="port-change" type="button">Switch Port Radius</button>
 
-<!-- Create an element where the map will take place -->
-<svg id="my_dataviz" width="500" height="400"></svg>
+	<!-- Create an element where the map will take place -->
+	<svg id="my_dataviz" width="500" height="400"></svg>
+	<p>This visualization shows a world map with various shipping ports as circles. The radius of the circle gets larger as the volume of goods being transferred increases while the color of the circle gets lighter as the political value of the port increases. The volume of goods is being measured in Twenty-foot Equivalent Units (TEUs). There is a correlation between the color and the size of the circles as larger ports hold more political power.</p>
+</html>
+	
 <script>
 
 // The svg
