@@ -10,6 +10,18 @@
         top: 450px;
         left: 10px;
     }
+	
+	div.tooltip {	
+		position: absolute;
+		text-align: center;
+		width: 150px;
+		padding: 2px;				
+		font: 12px sans-serif;		
+		background: lightsteelblue;	
+		border: 0px;		
+		border-radius: 8px;			
+		pointer-events: none;			
+	}
 </style>
 
 <!-- Load d3.js and the geo projection plugin -->
@@ -49,7 +61,14 @@ d3.queue()
   .defer(d3.json, "world.json")  // World shape
   .defer(d3.csv, "top100port.csv") // Position of circles
   .await(ready);
-
+	
+//Define Tooltip here
+// create a tooltip
+var div = d3.select("body").append("div")	
+	.attr("class", "tooltip")				
+	.style("opacity", 0);
+	
+	
 function ready(error, dataGeo, data) {
 
 var valueExtent = d3.extent(data, function(d) { return +d.size; })
@@ -85,6 +104,23 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       .attr("stroke-width", 1)
       .attr("fill", function(d){ return color(+d.size) })
       .attr("fill-opacity", .4)
+	  .on("mouseover", function(d) { // tooltip
+			div.transition()		
+				.duration(200)		
+				.style("opacity", .9);		
+			div.html(function() { // what tooltip says
+				var str = "Name: " + d.name + " Port <br>";
+				str += "Volume: " + d.size + " Million TEU";
+				return str;
+			})	
+				.style("left", (d3.event.pageX) + "px") // where tooltip appears
+				.style("top", (d3.event.pageY) + "px");
+			})					
+		.on("mouseout", function(d) { // after mouse leaves
+			div.transition()		
+				.duration(500)		
+				.style("opacity", 0);	
+		});
 
   svg.selectAll("myCircles")
     .data(data.sort(function(a,b) { return +b.size - +a.size }).filter(function(d,i){ return i<1000 }))
@@ -98,6 +134,23 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       .attr("fill", function(d){ return color(+d.size) })
       .attr("fill-opacity", .7)
       .attr("stroke", "#333")
+	  .on("mouseover", function(d) { // tooltip
+			div.transition()		
+				.duration(200)		
+				.style("opacity", .9);		
+			div.html(function() { // what tooltip says
+				var str = "Name: " + d.name + " Port <br>";
+				str += "Volume: " + d.size + " Million TEU";
+				return str;
+			})	
+				.style("left", (d3.event.pageX) + "px") // where tooltip appears
+				.style("top", (d3.event.pageY) + "px");
+			})					
+		.on("mouseout", function(d) { // after mouse leaves
+			div.transition()		
+				.duration(500)		
+				.style("opacity", 0);	
+		});
 }
 	
 d3.select("#port-change").on("click", function(){
