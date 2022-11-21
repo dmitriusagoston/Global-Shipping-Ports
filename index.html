@@ -5,6 +5,11 @@
 		display: none;
 	}
 	
+    #port-change {
+        position: absolute;
+        top: 380px;
+        left: 10px;
+    }
 </style>
 
 <!-- Load d3.js and the geo projection plugin -->
@@ -15,7 +20,7 @@
 <button id="port-change" type="button">Switch Port Radius</button>
 
 <!-- Create an element where the map will take place -->
-<svg id="my_dataviz" width="630" height="350"></svg>
+<svg id="my_dataviz" width="500" height="400"></svg>
 <script>
 
 // The svg
@@ -23,12 +28,16 @@ var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
 
+var color = d3.scaleThreshold()
+    .domain([0, 1, 3, 5, 10, 15, 20, 30, 40, 45, 50])
+    .range(["#0d0887","#41049d","#6a00a8","#8f0da4","#b12a90","#cc4778","#e16462","#f2844b","#fca636","#fcce25","#f0f921"]);
+    
 // Map and projection
 var path = d3.geoPath();
 var projection = d3.geoMercator()
   .scale(70)
   .center([0,20])
-  .translate([width / 2, height / 2]);
+  .translate([width / 2, (height / 2) + 25]);
 
 d3.queue()
   .defer(d3.json, "world.json")  // World shape
@@ -38,10 +47,6 @@ d3.queue()
 function ready(error, dataGeo, data) {
 
 var valueExtent = d3.extent(data, function(d) { return +d.size; })
-    
-var color = d3.scaleThreshold()
-    .domain([0, 1, 3, 5, 10, 15, 20, 30, 40, 45, 50])
-    .range(["#0d0887","#41049d","#6a00a8","#8f0da4","#b12a90","#cc4778","#e16462","#f2844b","#fca636","#fcce25","#f0f921"]);
 
   // Add a scale for bubble size
   var size = d3.scaleSqrt()
@@ -83,9 +88,10 @@ var color = d3.scaleThreshold()
       .attr("cx", function(d){ return projection([+d.lon, +d.lat])[0] })
       .attr("cy", function(d){ return projection([+d.lon, +d.lat])[1] })
       .attr("r", function(d){ return size(2) })
-      .attr("stroke-width", 1)
+      .attr("stroke-width", 0.3)
       .attr("fill", function(d){ return color(+d.size) })
-      .attr("fill-opacity", .4)
+      .attr("fill-opacity", .7)
+      .attr("stroke", "#333")
 }
 	
 d3.select("#port-change").on("click", function(){
@@ -107,4 +113,42 @@ d3.select("#port-change").on("click", function(){
 		}
 	}
 });
+    
+var x = d3.scaleSqrt()
+    .domain([0, 50])
+    .rangeRound([240, 490]);
+
+var g = svg.append("g")
+    .attr("class", "key")
+    .attr("transform", "translate(0,40)");
+ 
+
+g.selectAll("rect")
+  .data(color.range().map(function(d) {
+      d = color.invertExtent(d);
+      if (d[0] == null) d[0] = x.domain()[0];
+      if (d[1] == null) d[1] = x.domain()[1];
+      return d;
+    }))
+  .enter().append("rect")
+    .attr("height", 8)
+    .attr("x", function(d) { return x(d[0]); })
+    .attr("width", function(d) { return x(d[1]) - x(d[0]); })
+    .attr("fill", function(d) { return color(d[0]); });
+
+g.append("text")
+    .attr("class", "caption")
+    .attr("x", x.range()[0])
+    .attr("y", -5)
+    .attr("fill", "#000")
+    .attr("text-anchor", "start")
+    .attr("font-weight", "bold")
+    .text("Volume Transported (Million TEU)");
+
+g.call(d3.axisBottom(x)
+    .tickSize(13)
+    .tickValues(color.domain()))
+  .select(".domain")
+    .remove();
+    
 </script>
