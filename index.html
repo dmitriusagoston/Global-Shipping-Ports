@@ -188,13 +188,29 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       .attr("stroke-width", 1)
       .attr("fill", function(d){ return color(+d.size) })
       .attr("fill-opacity", .4)
+      .on("click", function(d) {
+        console.log(d)
+        if (d.clicked == "FALSE") {
+          d.clicked = "TRUE"
+          d3.select(this)
+            .attr("fill" , "#00ffff")
+            .attr("fill-opacity", 1)
+        } else {
+          d.clicked = "FALSE"
+          d3.select(this)
+            .attr("fill", function(d){ return color(+d.size) })
+            .attr("fill-opacity", 0.7)
+        }
+      })
 	  .on("mouseover", function(d) { // tooltip
 			div.transition()		
 				.duration(200)		
 				.style("opacity", .9);		
 			div.html(function() { // what tooltip says
 				var str = "Name: " + d.name + " Port <br>";
-				str += "Volume: " + d.size + " Million TEU";
+				str += "Volume: " + d.size + " Million TEU <br>";
+                str += "Port Type: " + d.type + " Port <br>";
+                str += "Can Support Military: " + d.military;
 				return str;
 			})	
 				.style("left", (d3.event.pageX) + "px") // where tooltip appears
@@ -218,13 +234,29 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       .attr("fill", function(d){ return color(+d.size) })
       .attr("fill-opacity", .7)
       .attr("stroke", "#333")
+      .on("click", function(d) {
+        console.log(d)
+        if (d.clicked == "FALSE") {
+          d.clicked = "TRUE"
+          d3.select(this)
+            .attr("fill" , "#00ffff")
+            .attr("fill-opacity", 1)
+        } else {
+          d.clicked = "FALSE"
+          d3.select(this)
+            .attr("fill", function(d){ return color(+d.size) })
+            .attr("fill-opacity", .7)
+        }
+      })
 	  .on("mouseover", function(d) { // tooltip
 			div.transition()		
 				.duration(200)		
 				.style("opacity", .9);		
 			div.html(function() { // what tooltip says
 				var str = "Name: " + d.name + " Port <br>";
-				str += "Volume: " + d.size + " Million TEU";
+				str += "Volume: " + d.size + " Million TEU <br>";
+                str += "Port Type: " + d.type + " Port <br>";
+                str += "Can Support Military: " + d.military;
 				return str;
 			})	
 				.style("left", (d3.event.pageX) + "px") // where tooltip appears
@@ -286,7 +318,7 @@ g.append("text")
     .attr("fill", "#000")
     .attr("text-anchor", "start")
     .attr("font-weight", "bold")
-    .text("Volume Transported (Million TEU)");
+    .text("Volume Transported (Million TEU)")
 
 g.call(d3.axisBottom(x)
     .tickSize(13)
