@@ -121,7 +121,14 @@
 // The svg
 var svg = d3.select("svg"),
     width = +svg.attr("width"),
-    height = +svg.attr("height");
+    height = +svg.attr("height")
+
+/*
+    svg.call(d3.zoom().on("zoom", function () {
+          svg.attr("transform", d3.event.transform)
+    }))
+    svg.append("g")
+*/
 
 var color = d3.scaleThreshold()
     .domain([0, 1, 3, 5, 10, 15, 20, 30, 40, 45, 50])
@@ -133,6 +140,7 @@ var projection = d3.geoMercator()
   .scale(70)
   .center([0,20])
   .translate([width / 2, (height / 2) + 25]);
+  
 
 d3.queue()
   .defer(d3.json, "world.json")  // World shape
@@ -144,8 +152,7 @@ d3.queue()
 var div = d3.select("body").append("div")	
 	.attr("class", "tooltip")				
 	.style("opacity", 0);
-	
-	
+    
 function ready(error, dataGeo, data) {
 
 var valueExtent = d3.extent(data, function(d) { return +d.size; })
@@ -229,7 +236,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
 				.style("opacity", 0);	
 		});
 }
-	
+    
 d3.select("#port-change").on("click", function(){
 	const check = document.querySelectorAll(".diff");
 	const check2 = document.querySelectorAll(".same");
@@ -287,4 +294,18 @@ g.call(d3.axisBottom(x)
   .select(".domain")
     .remove();
     
+var zoom = d3.zoom()
+      .scaleExtent([1, 8])
+      .on('zoom', function() {
+          
+          svg.selectAll("circle")
+           .attr('transform', d3.event.transform)
+          
+          svg.selectAll('path')
+           .attr('transform', d3.event.transform);
+          
+});
+
+svg.call(zoom);
 </script>
+<!--<script type="text/javascript" src="FinalMultiline.js"></script> -->
