@@ -204,7 +204,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       .attr("stroke-width", 1)
       .attr("fill", function(d){ return color(+d.size) })
       .attr("fill-opacity", .4)
-      .attr("id", function(d) { return "bigC" + d.name.replace(" ", "-"); })
+      .attr("id", function(d) { return "bigC" + d.name.replace(/ /g, "-"); })
 	  .on("mouseover", function(d) { // tooltip
 			div.transition()		
 				.duration(200)		
@@ -225,7 +225,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
               .style("opacity", 0);	
       })
       .on("click", function(d) {
-          let line = g.select("#" + d.name.replace(" ", "-"));
+          let line = g.select("#" + d.name.replace(/ /g, "-"));
           if (line.attr("visibility") == "visible") {
               line.attr("visibility", "hidden");
           } else {
@@ -260,7 +260,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       .attr("fill", function(d){ return color(+d.size) })
       .attr("fill-opacity", .7)
       .attr("stroke", "#333")
-      .attr("id", function(d) { return "smallC" + d.name.replace(" ", "-"); })
+      .attr("id", function(d) { return "smallC" + d.name.replace(/ /g, "-"); })
 	  .on("mouseover", function(d) { // tooltip
 			div.transition()		
 				.duration(200)		
@@ -281,7 +281,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
 				.style("opacity", 0);	
 		})
     .on("click", function(d) {
-        let line = g.select("#" + d.name.replace(" ", "-"));
+        let line = g.select("#" + d.name.replace(/ /g, "-"));
         if (line.attr("visibility") == "visible") {
             line.attr("visibility", "hidden");
         } else {
@@ -302,7 +302,30 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
           .attr("fill", function(d){ return color(+d.size) })
           .attr("fill-opacity", 0.7)
       }
-    })
+    });
+}
+    
+d3.select("#port-change").on("click", function(){
+	const check = document.querySelectorAll(".diff");
+	const check2 = document.querySelectorAll(".same");
+	if (check[0].style.display == '') {
+		for (let i = 0; i < check.length; i++) {
+			check[i].style.display = "none";
+		}
+		for (let i = 0; i < check2.length; i++) {
+			check2[i].style.display = "block";
+		}
+	} else {
+		for (let i = 0; i < check.length; i++) {
+			check[i].style.display = "";
+		}
+		for (let i = 0; i < check2.length; i++) {
+			check2[i].style.display = "none";
+		}
+	}
+});
+  
+
     var x = d3.scaleSqrt()
         .domain([0, 50])
         .rangeRound([240, 490]);
@@ -339,29 +362,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
         .tickValues(color.domain()))
       .select(".domain")
         .remove();
-}
-    
-d3.select("#port-change").on("click", function(){
-	const check = document.querySelectorAll(".diff");
-	const check2 = document.querySelectorAll(".same");
-	if (check[0].style.display == '') {
-		for (let i = 0; i < check.length; i++) {
-			check[i].style.display = "none";
-		}
-		for (let i = 0; i < check2.length; i++) {
-			check2[i].style.display = "block";
-		}
-	} else {
-		for (let i = 0; i < check.length; i++) {
-			check[i].style.display = "";
-		}
-		for (let i = 0; i < check2.length; i++) {
-			check2[i].style.display = "none";
-		}
-	}
-});
   
-    
 var zoom = d3.zoom()
       .scaleExtent([1, 8])
       .on('zoom', function() {
@@ -413,7 +414,7 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
 
   // Creates an array containing the port names (col 1 of data except 1st element) and their values
   var ports = data.columns.slice(1).map(function(id) {
-    var replacementID = id.replace(" ", "-");
+    var replacementID = id.replace(/ /g, "-");
     return {
       id: replacementID,
       values: data.map(function(d) {
@@ -501,7 +502,7 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
 				.duration(200)		
 				.style("opacity", .9);		
 			  div.html(function() { // what tooltip says
-				var str = d.id + " Port";
+				var str = d.id.replace(/-/g, " ") + " Port";
 				return str;
 			})	
 				.style("left", (d3.event.pageX) + "px") // where tooltip appears
@@ -517,12 +518,12 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
           .style("opacity", 0);	
       })*/
       .on("click", function(d) {
-        let line = g.select("#" + d.id.replace(" ", "-"));
+        let line = g.select("#" + d.id.replace(/ /g, "-"));
         if (line.attr("visibility") == "visible") {
             line.attr("visibility", "hidden");
-            svg.select("#bigC" + d.id.replace(" ", "-")).attr("fill", function(d){ return color(+d.size) })
+            svg.select("#bigC" + d.id.replace(/ /g, "-")).attr("fill", function(d){ return color(+d.size) })
             .attr("fill-opacity", 0.7)
-            svg.select("#smallC" + d.id.replace(" ", "-")).attr("fill", function(d){ return color(+d.size) })
+            svg.select("#smallC" + d.id.replace(/ /g, "-")).attr("fill", function(d){ return color(+d.size) })
             .attr("fill-opacity", 0.7)
         } else {
             line.attr("visibility", "visible");
