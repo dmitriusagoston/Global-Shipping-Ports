@@ -231,8 +231,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
           } else {
               line.attr("visibility", "visible");
           }
-      if (d.clicked == "FALSE") {
-          d.clicked = "TRUE"
+      if (d3.select(this).attr("fill") != "#00ffff") {
           d3.select(this)
             .attr("fill" , "#00ffff")
             .attr("fill-opacity", 1)
@@ -240,7 +239,6 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
             .attr("fill" , "#00ffff")
             .attr("fill-opacity", 1)
         } else {
-          d.clicked = "FALSE"
           d3.select(this)
             .attr("fill", function(d){ return color(+d.size) })
             .attr("fill-opacity", 0.7)
@@ -289,8 +287,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
         } else {
             line.attr("visibility", "visible");
         }
-    if (d.clicked == "FALSE") {
-        d.clicked = "TRUE"
+    if (d3.select(this).attr("fill") != "#00ffff") {
         d3.select(this)
           .attr("fill" , "#00ffff")
           .attr("fill-opacity", 1)
@@ -298,7 +295,6 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
           .attr("fill" , "#00ffff")
           .attr("fill-opacity", 1)
       } else {
-        d.clicked = "FALSE"
         d3.select(this)
           .attr("fill", function(d){ return color(+d.size) })
           .attr("fill-opacity", 0.7)
