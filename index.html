@@ -84,8 +84,8 @@
 	<button id="port-change" type="button">Switch Port Radius</button>
 
 	<!-- Create an element where the map will take place -->
-	<svg id="portMap" width="1100" height="400"></svg>
-    <svg id="portLine" width="1100" height="400"></svg>
+	<svg id="portMap" width="500" height="400"></svg>
+  <svg id="portLine" width="600" height="400"></svg>
 	<p>This visualization shows a world map with various shipping ports as circles. The radius of the circle gets larger as the volume of goods being transferred increases while the color of the circle gets lighter as the political value of the port increases. The volume of goods is being measured in Twenty-foot Equivalent Units (TEUs). There is a correlation between the color and the size of the circles as larger ports hold more political power.</p>
 	
 	
@@ -155,7 +155,7 @@ var path = d3.geoPath();
 var projection = d3.geoMercator()
   .scale(70)
   .center([0,20])
-  .translate([width / 4, (height / 2) + 25]);
+  .translate([width / 2, (height / 2) + 25]);
   
 
 d3.queue()
@@ -204,6 +204,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       .attr("stroke-width", 1)
       .attr("fill", function(d){ return color(+d.size) })
       .attr("fill-opacity", .4)
+      .attr("id", function(d) { return "bigC" + d.name; })
 	  .on("mouseover", function(d) { // tooltip
 			div.transition()		
 				.duration(200)		
@@ -235,9 +236,15 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
           d3.select(this)
             .attr("fill" , "#00ffff")
             .attr("fill-opacity", 1)
+          d3.select("#smallC" + d.name)
+            .attr("fill" , "#00ffff")
+            .attr("fill-opacity", 1)
         } else {
           d.clicked = "FALSE"
           d3.select(this)
+            .attr("fill", function(d){ return color(+d.size) })
+            .attr("fill-opacity", 0.7)
+          d3.select("#smallC" + d.name)
             .attr("fill", function(d){ return color(+d.size) })
             .attr("fill-opacity", 0.7)
         }
@@ -255,6 +262,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       .attr("fill", function(d){ return color(+d.size) })
       .attr("fill-opacity", .7)
       .attr("stroke", "#333")
+      .attr("id", function(d) { return "smallC" + d.name; })
 	  .on("mouseover", function(d) { // tooltip
 			div.transition()		
 				.duration(200)		
@@ -286,9 +294,15 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
         d3.select(this)
           .attr("fill" , "#00ffff")
           .attr("fill-opacity", 1)
+        d3.select("#bigC" + d.name)
+          .attr("fill" , "#00ffff")
+          .attr("fill-opacity", 1)
       } else {
         d.clicked = "FALSE"
         d3.select(this)
+          .attr("fill", function(d){ return color(+d.size) })
+          .attr("fill-opacity", 0.7)
+        d3.select("#bigC" + d.name)
           .attr("fill", function(d){ return color(+d.size) })
           .attr("fill-opacity", 0.7)
       }
@@ -369,7 +383,7 @@ svg.call(zoom);
 <script>
 // Multiline -----------------------------------------------------------------
 var svg2 = d3.select("#portLine"),
-    margin = {top: 25, right: 80, bottom: 40, left: 600},
+    margin = {top: 25, right: 80, bottom: 40, left: 50},
     width = svg2.attr("width") - margin.left - margin.right,
     height = svg2.attr("height") - margin.top - margin.bottom,
     g = svg2.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -474,62 +488,6 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
       .attr("class", "port")
       .attr("id", function(d) { return d.id; })
       .attr("visibility", "hidden");
-
-  /*function hover(elem) {
-     //var attrs = elem.srcElement.attributes;
-     //let id = attrs['data-id'].value;
-     let path = port.select('#' + elem.id);
-     /*if (path.attr('visibility') == 'hidden') {
-      return;
-     }
-     port.selectAll('.line').style('stroke', d => {
-      let target_id = d.id.substring(0, 3).toUpperCase();
-      if (d.id == elem.id) {
-          return z(d.id)
-      }else {
-          return '#fff'
-      }
-     });
-  }
-
-  function exit(elem) {
-     //var attrs = elem.srcElement.attributes;
-     //let id = attrs['data-id'].value;
-     let path = port.select('#' + elem.id);
-     /*if (path.attr('visibility') == 'hidden') {
-        return;
-     }
-     port.selectAll('.line').style('stroke', d => {
-        return z(d.id)
-     });
-  }
-
-  function click(elem) {
-    //var attrs = elem.srcElement.attributes;
-
-    //let id = attrs['data-id'].value;
-
-    let p = port.select('#' + elem.id);
-      console.log(p);
-      p.attr("opacity", 0);
-    let visibility = p.attr("opacity");
-    if (visibility == 'visible') {
-    p.attr('visibility', 'hidden');
-    port.selectAll('.line').style('stroke', d => {
-     return z(d.id)
-     });
-    }else{
-    p.attr('visibility', 'visible');
-    port.selectAll('.line').style('stroke', d => {
-      let target_id = d.id.substring(0, 3).toUpperCase();
-      if (d.id.substring(0, 3).toUpperCase() == id) {
-          return z(d.id)
-      }else {
-          return '#eaeaea'
-      }
-     });
-    }
-  }*/
     
   // Creates the lines for each port
   var path = port.append("path")
@@ -562,6 +520,10 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
         let line = g.select("#" + d.id);
         if (line.attr("visibility") == "visible") {
             line.attr("visibility", "hidden");
+            svg.select("#bigC" + d.id).attr("fill", function(d){ return color(+d.size) })
+            .attr("fill-opacity", 0.7)
+            svg.select("#smallC" + d.id).attr("fill", function(d){ return color(+d.size) })
+            .attr("fill-opacity", 0.7)
         } else {
             line.attr("visibility", "visible");
         }
