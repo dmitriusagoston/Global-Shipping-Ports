@@ -7,7 +7,7 @@
 	
     #port-change {
         position: absolute;
-        top: 450px;
+        top: 720px;
         left: 10px;
     }
 	
@@ -85,8 +85,8 @@
 	<button id="port-change" type="button">Switch Port Radius</button>
 
 	<!-- Create an element where the map will take place -->
-	<svg id="portMap" width="500" height="400"></svg>
-  <svg id="portLine" width="600" height="400"></svg>
+	<svg id="portMap" width="800" height="670"></svg>
+  <svg id="portLine" width="800" height="670"></svg>
 	<p>This visualization shows a world map with various shipping ports as circles. The radius of the circle gets larger as the volume of goods being transferred increases while the color of the circle gets lighter as the political value of the port increases. The volume of goods is being measured in Twenty-foot Equivalent Units (TEUs). There is a correlation between the color and the size of the circles as larger ports hold more political power.</p>
 	
 	
@@ -154,7 +154,7 @@ var color = d3.scaleThreshold()
 // Map and projection
 var path = d3.geoPath();
 var projection = d3.geoMercator()
-  .scale(70)
+  .scale(200)
   .center([0,20])
   .translate([width / 2, (height / 2) + 25]);
   
@@ -195,7 +195,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       .attr("stroke-width", 0.5)
         var x = d3.scaleSqrt()
         .domain([0, 50])
-        .rangeRound([240, 490]);
+        .rangeRound([540, 790]);
 
     var leg = svg.append("g")
         .attr("class", "key")
@@ -461,7 +461,7 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x))
     .append("text")
-      .attr("x", 200)
+      .attr("x", 350)
       //.attr("y", -10)
       .attr("dy", "2.5em")
       .attr("fill", "#000")
@@ -475,7 +475,7 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
       .call(d3.axisLeft(y))
     .append("text")
       .attr("transform", "rotate(-90)")
-      .attr("x", -200)
+      .attr("x", -300)
       .attr("dy", "-2.5em")
       .attr("fill", "#000")
       .attr("font-size", "15px")
@@ -552,26 +552,6 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
         .ease(d3.easeLinear)
         .attr("stroke-dashoffset", 0);
 
-  // Adds text at the end of each port's line
-  /*port.append("text")
-      .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
-      .attr("transform", function(d) { return "translate(" + x(d.value.year) + "," + y(d.value.TEU) + ")"; })
-      .attr("x", 3)
-      .attr("dy", "0.35em")
-      .style("font", "10px sans-serif")
-      .text(function(d) { return d.id.replace("-", " "); })
-      .on("click", function(d) {
-        let line = g.select("#" + d.id.replace(" ", "-"));
-        if (line.attr("visibility") == "visible") {
-            line.attr("visibility", "hidden");
-            svg.select("#bigC" + d.id.replace(" ", "-")).attr("fill", function(d){ return color(+d.size) })
-            .attr("fill-opacity", 0.7)
-            svg.select("#smallC" + d.id.replace(" ", "-")).attr("fill", function(d){ return color(+d.size) })
-            .attr("fill-opacity", 0.7)
-        } else {
-            line.attr("visibility", "visible");
-        }
-      })*/
 });
 
 // Sets up the data used to parse 
