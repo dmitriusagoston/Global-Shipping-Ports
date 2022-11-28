@@ -7,7 +7,7 @@
 	
     #port-change {
         position: absolute;
-        top: 720px;
+        top: 680px;
         left: 10px;
     }
 	
@@ -72,6 +72,10 @@
       stroke-width: 0;
     }
 
+    #insight {
+      margin-left: 50px;
+      margin-right: 50px;
+    }
 </style>
 
 <!-- Load d3.js and the geo projection plugin -->
@@ -80,15 +84,18 @@
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
 <html>
+  <title>Global Shipping Ports</title>
 	<h1 style = "text-align:center"><bold>Global Shipping Ports</bold></h1>
 	
+  <h3 style = "text-align:center"> Insights </h3>
+  <p id = "insight", style = "text-align:center">Shipping, a vital part of international commerce, is something that affects the livelihood of everyone. This visualization shows the top 100 ports in the world based off of the volume of goods transported. As the amount of goods in the port increases, so does its value in comparision to every other port. This is reflected on the map where, the greater the radius, the greater significance while, the brighter the color, the larger quantity of cargo being transported. </p>
+  
+  <p id = "TEU", style = "text-align:center">The volume of goods transported is measured in Twenty-Foot Equivalent Units (TEUs) which is a standarized shipping container with internal dimensions of approximately 20'x8'x8'.</p>
 	<button id="port-change" type="button">Switch Port Radius</button>
 
 	<!-- Create an element where the map will take place -->
-	<svg id="portMap" width="800" height="670"></svg>
-  <svg id="portLine" width="800" height="670"></svg>
-	<p>This visualization shows a world map with various shipping ports as circles. The radius of the circle gets larger as the volume of goods being transferred increases while the color of the circle gets lighter as the political value of the port increases. The volume of goods is being measured in Twenty-foot Equivalent Units (TEUs). There is a correlation between the color and the size of the circles as larger ports hold more political power.</p>
-	
+	<svg id="portMap" width="800" height="500"></svg>
+  <svg id="portLine" width="800" height="500"></svg>
 	
 	<div class = 'author'>
 		<h4 style="font-style: italic"><br/>Created by</h4>
@@ -112,7 +119,7 @@
             <p>
             	<a href="https://data.humdata.org/dataset/global-ports">Global Port Dataset</a><br>
 				<a href="https://lloydslist.maritimeintelligence.informa.com/one-hundred-container-ports-2020">Top 100 Ports</a><br>
-				<a href="https://datacatalog.worldbank.org/search/dataset/0038118">Global - International Ports</a><br>
+				<a href="https://bl.ocks.org/piwodlaiwo/3734a1357696dcff203a94012646e932">World Map</a><br>
             </p>
           </div>
           <div class="column middle2">
@@ -120,6 +127,7 @@
 			<p>
 				<a href="https://d3-graph-gallery.com/graph/bubblemap_template.html">Bubble Map</a><br>
 				<a href="https://bl.ocks.org/piwodlaiwo/3734a1357696dcff203a94012646e932">World Map</a><br>
+        <a href="https://bl.ocks.org/Simonl07/778eb635c34bd2158706ac72aecbc979">Multiline Chart</a><br>
         	</p>
           </div>
           <div class="column right">
@@ -127,6 +135,9 @@
             <p>
 				<a href="https://d3-graph-gallery.com/graph/bubblemap_template.html">Bubble Map</a><br>
 				<a href="https://bl.ocks.org/piwodlaiwo/3734a1357696dcff203a94012646e932">World Map</a><br>
+        <a href="https://bl.ocks.org/Simonl07/778eb635c34bd2158706ac72aecbc979">Multiline Chart</a><br>
+        <a href="https://github.com/scotthmurray/d3-book">d3 Book</a><br>
+        <a href="https://sureshlodha.github.io/CMPS263_Winter2018/CMPS263FinalProjects/ChineseHistory/index.html">Columnar Center Layout</a><br>
 			</p>
           </div>
         </div>
@@ -154,7 +165,7 @@ var color = d3.scaleThreshold()
 // Map and projection
 var path = d3.geoPath();
 var projection = d3.geoMercator()
-  .scale(200)
+  .scale(150)
   .center([0,20])
   .translate([width / 2, (height / 2) + 25]);
   
@@ -177,7 +188,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
   // Add a scale for bubble size
   var size = d3.scaleSqrt()
     .domain(valueExtent)  // What's in the data
-    .range([ 1, 15])  // Size in pixel
+    .range([ 3, 35])  // Size in pixel
 
   // Draw the map
   svg.append("g")
@@ -475,7 +486,7 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
       .call(d3.axisLeft(y))
     .append("text")
       .attr("transform", "rotate(-90)")
-      .attr("x", -300)
+      .attr("x", -225)
       .attr("dy", "-2.5em")
       .attr("fill", "#000")
       .attr("font-size", "15px")
