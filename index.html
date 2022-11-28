@@ -484,7 +484,50 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
     .enter().append("g")
       .attr("class", "port")
       .attr("id", function(d) { return d.id; })
-      .attr("visibility", "hidden");
+      .attr("visibility", "hidden")
+      .on("mouseover", function(d) {
+        //let path = port.select('#' + this.id);
+       /*if (path.attr('visibility') == 'hidden') {
+        return;
+       }*/
+        port.selectAll('.line').style('stroke', d => {
+          if (d.id == this.id) {
+              return z(d.id)
+          } else {
+              return '#eaeaea'
+          }
+        })
+        div.transition()		
+				.duration(200)		
+				.style("opacity", .9);		
+			  div.html(function() { // what tooltip says
+				var str = d.id + " Port";
+				return str;
+			})	
+				.style("left", (d3.event.pageX) + "px") // where tooltip appears
+				.style("top", (d3.event.pageY) + "px")
+        div.transition().duration(0).style("opacity", 0.8);
+      })
+      /*.on("mouseout", function(d) {
+        port.selectAll('.line').style('stroke', d => {
+	  	    return z(d.id)
+        })
+        div.transition()		
+          .duration(2500)		
+          .style("opacity", 0);	
+      })*/
+      .on("click", function(d) {
+        let line = g.select("#" + d.id.replace(" ", "-"));
+        if (line.attr("visibility") == "visible") {
+            line.attr("visibility", "hidden");
+            svg.select("#bigC" + d.id.replace(" ", "-")).attr("fill", function(d){ return color(+d.size) })
+            .attr("fill-opacity", 0.7)
+            svg.select("#smallC" + d.id.replace(" ", "-")).attr("fill", function(d){ return color(+d.size) })
+            .attr("fill-opacity", 0.7)
+        } else {
+            line.attr("visibility", "visible");
+        }
+      });
     
   // Creates the lines for each port
   var path = port.append("path")
@@ -506,7 +549,7 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
         .attr("stroke-dashoffset", 0);
 
   // Adds text at the end of each port's line
-  port.append("text")
+  /*port.append("text")
       .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
       .attr("transform", function(d) { return "translate(" + x(d.value.year) + "," + y(d.value.TEU) + ")"; })
       .attr("x", 3)
@@ -524,7 +567,7 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
         } else {
             line.attr("visibility", "visible");
         }
-      })
+      })*/
 });
 
 // Sets up the data used to parse 
