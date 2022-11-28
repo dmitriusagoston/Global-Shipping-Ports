@@ -204,7 +204,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       .attr("stroke-width", 1)
       .attr("fill", function(d){ return color(+d.size) })
       .attr("fill-opacity", .4)
-      .attr("id", function(d) { return "bigC" + d.name; })
+      .attr("id", function(d) { return "bigC" + d.name.replace(" ", "-"); })
 	  .on("mouseover", function(d) { // tooltip
 			div.transition()		
 				.duration(200)		
@@ -225,7 +225,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
               .style("opacity", 0);	
       })
       .on("click", function(d) {
-          let line = g.select("#" + d.name);
+          let line = g.select("#" + d.name.replace(" ", "-"));
           if (line.attr("visibility") == "visible") {
               line.attr("visibility", "hidden");
           } else {
@@ -260,7 +260,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       .attr("fill", function(d){ return color(+d.size) })
       .attr("fill-opacity", .7)
       .attr("stroke", "#333")
-      .attr("id", function(d) { return "smallC" + d.name; })
+      .attr("id", function(d) { return "smallC" + d.name.replace(" ", "-"); })
 	  .on("mouseover", function(d) { // tooltip
 			div.transition()		
 				.duration(200)		
@@ -281,7 +281,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
 				.style("opacity", 0);	
 		})
     .on("click", function(d) {
-        let line = g.select("#" + d.name);
+        let line = g.select("#" + d.name.replace(" ", "-"));
         if (line.attr("visibility") == "visible") {
             line.attr("visibility", "hidden");
         } else {
@@ -413,8 +413,9 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
 
   // Creates an array containing the port names (col 1 of data except 1st element) and their values
   var ports = data.columns.slice(1).map(function(id) {
+    var replacementID = id.replace(" ", "-");
     return {
-      id: id,
+      id: replacementID,
       values: data.map(function(d) {
         return {year: d.year, TEU: d[id]};
       })
@@ -511,14 +512,14 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
       .attr("x", 3)
       .attr("dy", "0.35em")
       .style("font", "10px sans-serif")
-      .text(function(d) { return d.id; })
+      .text(function(d) { return d.id.replace("-", " "); })
       .on("click", function(d) {
-        let line = g.select("#" + d.id);
+        let line = g.select("#" + d.id.replace(" ", "-"));
         if (line.attr("visibility") == "visible") {
             line.attr("visibility", "hidden");
-            svg.select("#bigC" + d.id).attr("fill", function(d){ return color(+d.size) })
+            svg.select("#bigC" + d.id.replace(" ", "-")).attr("fill", function(d){ return color(+d.size) })
             .attr("fill-opacity", 0.7)
-            svg.select("#smallC" + d.id).attr("fill", function(d){ return color(+d.size) })
+            svg.select("#smallC" + d.id.replace(" ", "-")).attr("fill", function(d){ return color(+d.size) })
             .attr("fill-opacity", 0.7)
         } else {
             line.attr("visibility", "visible");
