@@ -57,25 +57,56 @@
 	  stroke-width: 2px;
 	}
     
-    .line {
-      fill: none;
-      stroke-width: 1.5px;
-    }
+  .line {
+    fill: none;
+    stroke-width: 1.5px;
+  }
 
-    .grid line {
-      stroke: lightgrey;
-      stroke-opacity: 0.7;
-      shape-rendering: crispEdges;
-    }
+  .grid line {
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+  }
 
-    .grid path {
-      stroke-width: 0;
-    }
+  .grid path {
+    stroke-width: 0;
+  }
 
-    #insight {
-      margin-left: 50px;
-      margin-right: 50px;
-    }
+  #insight {
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+  
+  .track,
+  .track-inset,
+  .track-overlay {
+    stroke-linecap: round;
+  }
+
+  .track {
+    stroke: #000;
+    stroke-opacity: 0.3;
+    stroke-width: 10px;
+  }
+
+  .track-inset {
+    stroke: #dcdcdc;
+    stroke-width: 8px;
+  }
+
+  .track-overlay {
+    pointer-events: stroke;
+    stroke-width: 50px;
+    stroke: transparent;
+    cursor: crosshair;
+  }
+
+  .handle {
+    fill: #fff;
+    stroke: #000;
+    stroke-opacity: 0.5;
+    stroke-width: 1.25px;
+  }
 </style>
 
 <!-- Load d3.js and the geo projection plugin -->
@@ -96,7 +127,9 @@
 	<!-- Create an element where the map will take place -->
 	<svg id="portMap" width="800" height="500"></svg>
   <svg id="portLine" width="800" height="500"></svg>
-	
+  
+  <svg id="slider" width="800" height="500"></svg>
+  
 	<div class = 'author'>
 		<h4 style="font-style: italic"><br/>Created by</h4>
 			<p style="position:relative;top:0px;right:0px; font-size:16px; text-align:center;" id="myParagraph">
@@ -143,7 +176,7 @@
         </div>
 	</div>
 </html>
-	
+
 <script>
 
 // The svg
@@ -571,5 +604,142 @@ function type(d, _, columns) {
   for (var i = 1, n = columns.length, c; i < n; ++i) d[c = columns[i]] = +d[c];
   return d;
 }
+  
+// slider
+var svgSlider = d3.select("#slider")
+    margin = {top: 25, right: 80, bottom: 40, left: 50},
+    width = svgSlider.attr("width") - margin.left - margin.right,
+    height = svgSlider.attr("height") - margin.top - margin.bottom,
+    gg = svgSlider.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+var xSlider = d3.scaleLinear()
+    .domain([0, 50])
+    .range([0, width])
+    .clamp(true);
+
+var slider = svgSlider.append("g")
+    .attr("class", "slider")
+    .attr("transform", "translate(" + margin.left + "," + height / 2 + ")");
+
+slider.append("line")
+    .attr("class", "track")
+    .attr("x1", xSlider.range()[0])
+    .attr("x2", xSlider.range()[1])
+  .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+    .attr("class", "track-inset")
+  .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+    .attr("class", "track-overlay")
+    .call(d3.drag()
+        .on("start.interrupt", function() { slider.interrupt(); })
+        .on("start drag", function() { update(xSlider.invert(d3.event.x)); }));
+
+slider.insert("g", ".track-overlay")
+    .attr("class", "ticks")
+    .attr("transform", "translate(0," + 18 + ")")
+  .selectAll("text")
+    .data(xSlider.ticks(10))
+    .enter()
+    .append("text")
+    .attr("x", xSlider)
+    .attr("y", 10)
+    .attr("text-anchor", "middle")
+    .text(function(d) { return(d) } );
+
+/*
+var handle = slider.insert("circle", ".track-overlay")
+    .attr("class", "handle")
+    .attr("r", 9);
+
+var label = slider.append("text")  
+    .attr("class", "label")
+    .attr("text-anchor", "middle")
+    .text("0")
+    .attr("transform", "translate(0," + (-25) + ")")
+*/
+
+var beginHandle = slider.append("circle")
+    .attr("class", "handle")
+    .attr("r", 9)
+    .style("fill", "white")
+    .call(d3.drag()
+        .on("start.interrupt", function () {
+            slider.interrupt();
+        })
+        .on("start drag", function () {
+            updateBegin(xSlider.invert(d3.event.x));
+        }));
+
+var beginLabel = slider.append("text")
+    .attr("class", "label")
+    .attr("text-anchor", "middle")
+    .text(xSlider.domain()[0])
+    .attr("transform", "translate(0," + (-25) + ")");
+
+var endHandle = slider.append("circle")
+    .attr("class", "handle")
+    .attr("r", 9)
+    .style("fill", "white")
+    .attr("cx", xSlider.range()[1])
+    .call(d3.drag()
+        .on("start.interrupt", function () {
+            slider.interrupt();
+        })
+        .on("start drag", function () {
+            updateEnd(xSlider.invert(d3.event.x));
+        }));
+
+var endLabel = slider.append("text")
+    .attr("class", "label")
+    .attr("text-anchor", "middle")
+    .text(xSlider.domain()[1])
+    .attr("transform", "translate(0," + (-25) + ")")
+    .attr("x", xSlider.range()[1]);
+
+/*
+function update(h) {
+  // update position and text of label according to slider scale
+  handle
+    .attr("cx", xSlider(h))
+  label
+    .attr("x", xSlider(h))
+    .text(String(h));
+
+  // filter data set and redraw plot
+  var newData = dataset.filter(function(d) {
+    return d.date < h;
+  })
+  drawPlot(newData);
+}
+*/
+  
+function updateEnd(h) {
+    endHandle.attr("cx", xSlider(h));
+    endLabel.attr("x", xSlider(h))
+        .text(String(h));
+    endDate = h;
+    if (xSlider(h) < beginLabel.attr("x")) {
+        beginLabel.attr("x", xSlider(h));
+        beginHandle.attr("cx", xSlider(h));
+        beginDate = h;
+    }
+    updateMap();
+}
+
+function updateBegin(h) {
+    beginHandle.attr("cx", xSlider(h));
+    beginLabel.attr("x", xSlider(h))
+        .text(String(h));
+    beginDate = h;
+    if (xSlider(h) > endLabel.attr("x")) {
+        endLabel.attr("x", xSlider(h));
+        endHandle.attr("cx", xSlider(h));
+        endDate = h;
+    }
+    updateMap();
+}
+  
+function updateMap() {
+    d3.selectAll("myCircles")
+        .style("fill-opacity", 0);
+}
 </script>
-<!--<script type="text/javascript" src="FinalMultiline.js"></script> -->
