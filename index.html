@@ -55,17 +55,19 @@
 	  fill: none;
 	  stroke: #EF5285;
 	  stroke-width: 2px;
+    z-index: 1;
 	}
     
   .line {
     fill: none;
-    stroke-width: 1.5px;
+    stroke-width: 2.5px;
   }
 
   .grid line {
     stroke: lightgrey;
     stroke-opacity: 0.7;
     shape-rendering: crispEdges;
+    z-index: -1;
   }
 
   .grid path {
@@ -125,10 +127,10 @@
 	<button id="port-change" type="button">Switch Port Radius</button>
 
 	<!-- Create an element where the map will take place -->
-	<svg id="portMap" width="800" height="500"></svg>
-  <svg id="portLine" width="800" height="500"></svg>
+	<svg id="portMap" width="600" height="500"></svg>
+  <svg id="portLine" width="600" height="500"></svg>
   
-  <svg id="slider" width="800" height="500"></svg>
+  <svg id="slider" width="600" height="150"></svg>
   
 	<div class = 'author'>
 		<h4 style="font-style: italic"><br/>Created by</h4>
@@ -198,7 +200,7 @@ var color = d3.scaleThreshold()
 // Map and projection
 var path = d3.geoPath();
 var projection = d3.geoMercator()
-  .scale(150)
+  .scale(110)
   .center([0,20])
   .translate([width / 2, (height / 2) + 25]);
   
@@ -214,6 +216,10 @@ var div = d3.select("body").append("div")
 	.attr("class", "tooltip")				
 	.style("opacity", 0);
     
+
+var beginDate = 0;
+var endDate = 50;
+
 function ready(error, dataGeo, data) {
 
 var valueExtent = d3.extent(data, function(d) { return +d.size; })
@@ -239,7 +245,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       .attr("stroke-width", 0.5)
         var x = d3.scaleSqrt()
         .domain([0, 50])
-        .rangeRound([540, 790]);
+        .rangeRound([340, 590]);
 
     var leg = svg.append("g")
         .attr("class", "key")
@@ -538,11 +544,17 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
        /*if (path.attr('visibility') == 'hidden') {
         return;
        }*/
-        port.selectAll('.line').style('stroke', d => {
+        port.selectAll(".line").style("stroke", d => {
           if (d.id == this.id) {
               return z(d.id)
           } else {
-              return '#eaeaea'
+              return '#cacaca'
+          }
+        }).style("stroke-opacity", d => {
+          if (d.id == this.id) {
+              return 1
+          } else {
+              return 0.5
           }
         })
         div.transition()		
@@ -556,14 +568,15 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
 				.style("top", (d3.event.pageY) + "px")
         div.transition().duration(0).style("opacity", 0.8);
       })
-      /*.on("mouseout", function(d) {
+      .on("mouseout", function(d) {
         port.selectAll('.line').style('stroke', d => {
-	  	    return z(d.id)
+          return z(d.id)
         })
+        .style("stroke-opacity", 1)
         div.transition()		
-          .duration(2500)		
+          .duration(500)		
           .style("opacity", 0);	
-      })*/
+      })
       .on("click", function(d) {
         let line = g.select("#" + d.id.replace(/ /g, "-"));
         if (line.attr("visibility") == "visible") {
@@ -609,7 +622,7 @@ function type(d, _, columns) {
 var svgSlider = d3.select("#slider")
     margin = {top: 25, right: 80, bottom: 40, left: 50},
     width = svgSlider.attr("width") - margin.left - margin.right,
-    height = svgSlider.attr("height") - margin.top - margin.bottom,
+    slideHeight = svgSlider.attr("height") - margin.top - margin.bottom,
     gg = svgSlider.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     
 var xSlider = d3.scaleLinear()
@@ -619,7 +632,7 @@ var xSlider = d3.scaleLinear()
 
 var slider = svgSlider.append("g")
     .attr("class", "slider")
-    .attr("transform", "translate(" + margin.left + "," + height / 2 + ")");
+    .attr("transform", "translate(" + margin.left + "," + slideHeight / 2 + ")");
 
 slider.append("line")
     .attr("class", "track")
@@ -715,31 +728,43 @@ function update(h) {
 function updateEnd(h) {
     endHandle.attr("cx", xSlider(h));
     endLabel.attr("x", xSlider(h))
-        .text(String(h));
+        .text(String(h.toFixed(2)));
     endDate = h;
     if (xSlider(h) < beginLabel.attr("x")) {
         beginLabel.attr("x", xSlider(h));
         beginHandle.attr("cx", xSlider(h));
         beginDate = h;
     }
-    updateMap();
+    updateMap(h);
 }
 
 function updateBegin(h) {
     beginHandle.attr("cx", xSlider(h));
     beginLabel.attr("x", xSlider(h))
-        .text(String(h));
+        .text(String(h.toFixed(2)));
     beginDate = h;
     if (xSlider(h) > endLabel.attr("x")) {
         endLabel.attr("x", xSlider(h));
         endHandle.attr("cx", xSlider(h));
         endDate = h;
     }
-    updateMap();
+    updateMap(h);
 }
   
-function updateMap() {
-    d3.selectAll("myCircles")
-        .style("fill-opacity", 0);
+function updateMap(h) {
+  d3.selectAll(".diff")
+        .style("fill-opacity", changeVisibility);
+  
+  d3.selectAll(".same")
+        .style("fill-opacity", changeVisibility)
+        .style("stroke-opacity", changeVisibility);
+}
+  
+function changeVisibility(d) {
+  if (d.size <= endDate && d.size >= beginDate) {
+    return 0.7;
+  } else {
+    return 0;
+  }
 }
 </script>
