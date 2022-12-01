@@ -4,7 +4,7 @@
 	.same {
 		display: none;
 	}
-	
+  
     #port-change {
         position: absolute;
         top: 680px;
@@ -219,6 +219,8 @@ var div = d3.select("body").append("div")
 
 var beginDate = 0;
 var endDate = 50;
+  
+var bigRadius = true;
 
 function ready(error, dataGeo, data) {
 
@@ -286,6 +288,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
     .enter()
     .append("circle")
 	  .attr("class", "diff")
+      .style("display", "block")
       .attr("cx", function(d){ return projection([+d.lon, +d.lat])[0] })
       .attr("cy", function(d){ return projection([+d.lon, +d.lat])[1] })
       .attr("r", function(d){ return size(+d.size) })
@@ -322,10 +325,10 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
       if (d3.select(this).attr("fill") != "#00ffff") {
           d3.select(this)
             .attr("fill" , "#00ffff")
-            .attr("fill-opacity", 0.7)
+            .attr("fill-opacity", 1)
           d3.select("#smallC" + d.name.replace(/ /g, "-"))
             .attr("fill" , "#00ffff")
-            .attr("fill-opacity", 0.7)
+            .attr("fill-opacity", 1)
         } else {
           d3.select(this)
             .attr("fill", function(d){ return color(+d.size) })
@@ -378,10 +381,10 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
     if (d3.select(this).attr("fill") != "#00ffff") {
         d3.select(this)
           .attr("fill" , "#00ffff")
-          .attr("fill-opacity", 0.7)
+          .attr("fill-opacity", 1)
         d3.select("#bigC" + d.name.replace(/ /g, "-"))
           .attr("fill" , "#00ffff")
-          .attr("fill-opacity", 0.7)
+          .attr("fill-opacity", 1)
       } else {
         d3.select(this)
           .attr("fill", function(d){ return color(+d.size) })
@@ -396,19 +399,26 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
 d3.select("#port-change").on("click", function(){
 	const check = document.querySelectorAll(".diff");
 	const check2 = document.querySelectorAll(".same");
-	if (check[0].style.display == '') {
-		for (let i = 0; i < check.length; i++) {
-			check[i].style.display = "none";
+	if (check[0].style.display == "block") {
+		bigRadius = false;
+    for (let i = 0; i < check2.length; i++) {
+      if (check[i].style.display == "block") {
+        check2[i].style.display = "block";
+      }
 		}
-		for (let i = 0; i < check2.length; i++) {
-			check2[i].style.display = "block";
+    for (let i = 0; i < check.length; i++) {
+      check[i].style.display = "none";
 		}
+		
 	} else {
-		for (let i = 0; i < check.length; i++) {
-			check[i].style.display = "";
+		bigRadius = true;
+    for (let i = 0; i < check.length; i++) {
+      if (check2[i].style.display == "block") {
+        check[i].style.display = "block";
+      }
 		}
 		for (let i = 0; i < check2.length; i++) {
-			check2[i].style.display = "none";
+      check2[i].style.display = "none";
 		}
 	}
 });
@@ -752,19 +762,21 @@ function updateBegin(h) {
 }
   
 function updateMap(h) {
-  d3.selectAll(".diff")
-        .style("fill-opacity", changeVisibility);
-  
-  d3.selectAll(".same")
-        .style("fill-opacity", changeVisibility)
-        .style("stroke-opacity", changeVisibility);
+  if (bigRadius) {
+    d3.selectAll(".diff")
+        .style("display", changeVisibility);
+  } else {
+    d3.selectAll(".same")
+        .style("display", changeVisibility)
+        //.style("stroke-opacity", changeVisibility);
+  }
 }
   
 function changeVisibility(d) {
   if (d.size <= endDate && d.size >= beginDate) {
-    return 0.7;
+    return "block";
   } else {
-    return 0;
+    return "none";
   }
 }
 </script>
