@@ -7,7 +7,7 @@
   
     #port-change {
         position: absolute;
-        top: 680px;
+        top: 660px;
         left: 10px;
     }
 	
@@ -121,16 +121,22 @@
 	<h1 style = "text-align:center"><bold>Global Shipping Ports</bold></h1>
 	
   <h3 style = "text-align:center"> Insights </h3>
-  <p id = "insight", style = "text-align:center">Shipping, a vital part of international commerce, is something that affects the livelihood of everyone. This visualization shows the top 100 ports in the world based off of the volume of goods transported. As the amount of goods in the port increases, so does its value in comparision to every other port. This is reflected on the map where, the greater the radius, the greater significance while, the brighter the color, the larger quantity of cargo being transported. </p>
   
-  <p id = "TEU", style = "text-align:center">The volume of goods transported is measured in Twenty-Foot Equivalent Units (TEUs) which is a standarized shipping container with internal dimensions of approximately 20'x8'x8'.</p>
+  <p id = "insight", style = "text-align:center">Shipping ports carry 80% of the world's traded goods, making them one of the most critical components in international commerce and trade politics. Ports will continue to grow in size based on previous years' data and cement Southeast Asia, specifically China, the center of global shipping commerce. While the United States of America is known to be an economic leader, its ports pale compared to other countries, even when excluding Southeast Asia. The surprisingly small ports might be due to the fact that the USA has a higher priority and budget towards military spending, as even commercial ports can be utilized for military purposes.</p>
+  
+  <!--
+  <p id = "insight", style = "text-align:center">This visualization shows the top 100 ports in the world based off of the volume of goods transported. As the amount of goods in the port increases, so does its value in comparision to every other port. This is reflected on the map where, the greater the radius, the greater significance while, the brighter the color, the larger quantity of cargo being transported. </p>
+  -->
+  
 	<button id="port-change" type="button">Switch Port Radius</button>
 
 	<!-- Create an element where the map will take place -->
 	<svg id="portMap" width="600" height="500"></svg>
-  <svg id="portLine" width="600" height="500"></svg>
+  <svg id="portLine" width="650" height="500"></svg>
   
   <svg id="slider" width="600" height="150"></svg>
+  
+  <p id = "TEU", style = "text-align:center">*The volume of goods transported is measured in Twenty-Foot Equivalent Units (TEUs) which is a standarized shipping container with internal dimensions of approximately 20'x8'x8'.</p>
   
 	<div class = 'author'>
 		<h4 style="font-style: italic"><br/>Created by</h4>
@@ -274,7 +280,7 @@ var valueExtent = d3.extent(data, function(d) { return +d.size; })
         .attr("fill", "#000")
         .attr("text-anchor", "start")
         .attr("font-weight", "bold")
-        .text("Volume Transported (Million TEU)")
+        .text("Volume Transported (Million TEU*)")
 
     leg.call(d3.axisBottom(x)
         .tickSize(13)
@@ -443,7 +449,7 @@ svg.call(zoom);
 <script>
 // Multiline -----------------------------------------------------------------
 var svg2 = d3.select("#portLine"),
-    margin = {top: 25, right: 80, bottom: 40, left: 50},
+    margin = {top: 25, right: 80, bottom: 40, left: 100},
     width = svg2.attr("width") - margin.left - margin.right,
     height = svg2.attr("height") - margin.top - margin.bottom,
     g = svg2.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -521,7 +527,7 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x))
     .append("text")
-      .attr("x", 350)
+      .attr("x", 250)
       //.attr("y", -10)
       .attr("dy", "2.5em")
       .attr("fill", "#000")
@@ -540,7 +546,7 @@ d3.csv("TEUByYear.csv", type, function(error, data) {
       .attr("fill", "#000")
       .attr("font-size", "15px")
       .style("text-anchor", "middle")
-      .text("Consumption (Million BTU/person)");
+      .text("Volume Transported (Million TEU*)");
 
   // Sets up an appendable object for each port
   var port = g.selectAll(".port")
@@ -667,6 +673,15 @@ slider.insert("g", ".track-overlay")
     .attr("y", 10)
     .attr("text-anchor", "middle")
     .text(function(d) { return(d) } );
+  
+  slider.append("text")
+    .attr("x",  230)
+    .attr("y", 15)
+      .attr("dy", "2.5em")
+      .attr("fill", "#000")
+      .attr("font-size", "15px")
+      .style("text-anchor", "middle")
+      .text("Volume Transported (Million TEU*)");
 
 /*
 var handle = slider.insert("circle", ".track-overlay")
