@@ -154,7 +154,7 @@
 
 	<!-- Create an element where the map will take place -->
 	<svg id="portMap" width="600" height="500"></svg>
-  <svg id="portLine" width="650" height="500"></svg>
+  <svg id="portLine" width="625" height="500"></svg>
   
   <svg id="slider" width="600" height="150"></svg>
   
@@ -473,7 +473,7 @@ svg.call(zoom);
 <script>
 // Multiline -----------------------------------------------------------------
 var svg2 = d3.select("#portLine"),
-    margin = {top: 25, right: 80, bottom: 40, left: 100},
+    margin = {top: 25, right: 80, bottom: 40, left: 75},
     width = svg2.attr("width") - margin.left - margin.right,
     height = svg2.attr("height") - margin.top - margin.bottom,
     g = svg2.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -705,7 +705,8 @@ slider.insert("g", ".track-overlay")
       .attr("fill", "#000")
       .attr("font-size", "15px")
       .style("text-anchor", "middle")
-      .text("Volume Transported (Million TEU*)");
+      .text("Volume Transported (Million TEU*)")
+        .style("font-family", "Arial, sans-serif");
 
 /*
 var handle = slider.insert("circle", ".track-overlay")
