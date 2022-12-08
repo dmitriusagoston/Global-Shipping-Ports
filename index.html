@@ -37,7 +37,7 @@
 	div.author {
 		font-size: 16px;
     	text-align: center;
-		background-color: aliceblue;
+		background-color: #ededed;
 	}
 	
 	.row:after {
@@ -109,6 +109,28 @@
     stroke-opacity: 0.5;
     stroke-width: 1.25px;
   }
+  
+  #mainTitle {
+    font-size: 36px;
+    font-family: Arial, sans-serif;
+  }
+  
+  p {
+    font-family: Arial, sans-serif;
+    line-height: 150%;
+  }
+  
+  h3 {
+    font-family: Arial, sans-serif;
+  }
+  
+  h4 {
+    font-family: Arial, sans-serif;
+  }
+  
+  b {
+    font-family: Arial, sans-serif;
+  }
 </style>
 
 <!-- Load d3.js and the geo projection plugin -->
@@ -118,7 +140,7 @@
 
 <html>
   <title>Global Shipping Ports</title>
-	<h1 style = "text-align:center"><bold>Global Shipping Ports</bold></h1>
+	<h1 id = "mainTitle", style = "text-align:center"><bold>Global Shipping Ports</bold></h1>
 	
   <h3 style = "text-align:center"> Insights </h3>
   
