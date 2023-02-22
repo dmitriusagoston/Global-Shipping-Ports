@@ -2,6 +2,8 @@
 
 This project is a visualization of global shipping ports.
 
+[Global Shipping Ports](https://dmitriusagoston.github.io/Global-Shipping-Ports/)
+
 ### Files
 
 - TEUByYear.csv - The data of shipping ports' TEU from the years 2011-2019
